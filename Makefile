@@ -26,6 +26,7 @@ ${OBJDIR}/%.o : %.cpp ${HEADERS}
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 clean:
+	@rm -f main.o
 	@rm -rf ${OBJDIR}
 	@rm -rf ${TESTNAME}
 
