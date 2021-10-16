@@ -40,8 +40,8 @@ make test
 ## conf.json:
 ```json
 {
-	"keyBool": true,
-	"keyString": "secret123"
+    "keyBool": true,
+    "keyString": "secret123"
 }
 ```
 ## Run
