@@ -3,6 +3,8 @@
 #include <iostream>
 #include <exception>
 
+#include "Utils.hpp"
+
 using std::string;
 
 namespace JSON {

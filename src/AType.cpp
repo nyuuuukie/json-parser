@@ -82,8 +82,6 @@ namespace JSON {
 		return false;
 	}
 
-
-
 	AType::ParseException::ParseException(std::string message) : _message(message) {}
 
 	AType::ParseException::~ParseException() throw() {}

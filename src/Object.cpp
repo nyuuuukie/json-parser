@@ -164,34 +164,34 @@ size_t Object::endOfScope(const std::string &text, size_t beg, char begScope, ch
 	return pos;
 }
 
-void skipWhitespaces(const string &s, size_t &i) {
+//void skipWhitespaces(const string &s, size_t &i) {
 
-	const size_t len = s.length();
-	for (; i < len; i++) {
-		if (s[i] != '\n' && s[i] != ' ' && s[i] != '\r' && s[i] != '\t')
-			break ;
-	}
-}
+//	const size_t len = s.length();
+//	for (; i < len; i++) {
+//		if (s[i] != '\n' && s[i] != ' ' && s[i] != '\r' && s[i] != '\t')
+//			break ;
+//	}
+//}
 
-void skipWhitespacesBack(const string &s, size_t &i) {
+//void skipWhitespacesBack(const string &s, size_t &i) {
 
-	for (; i > 0; i--) {
-		if (s[i] != '\n' && s[i] != ' ' && s[i] != '\r' && s[i] != '\t')
-			break ;
-	}
-}
+//	for (; i > 0; i--) {
+//		if (s[i] != '\n' && s[i] != ' ' && s[i] != '\r' && s[i] != '\t')
+//			break ;
+//	}
+//}
 
-void checkColon(const string &s, size_t &i) {
-	if (s[i] != ':' || (s[i] == ':' && s[i - 1] == '\\'))
-		throw AType::ParseException("Key and value parts must be separated with \":\"");
-	i++;
-}
+//void checkColon(const string &s, size_t &i) {
+//	if (s[i] != ':' || (s[i] == ':' && s[i - 1] == '\\'))
+//		throw AType::ParseException("Key and value parts must be separated with \":\"");
+//	i++;
+//}
 
-void checkComma(const string &s, size_t &i) {
-	if (s[i] != ',' || (s[i] == ',' && s[i - 1] == '\\'))
-		throw AType::ParseException("Key-value pair must be separated with \",\"");
-	i++;
-}
+//void checkComma(const string &s, size_t &i) {
+//	if (s[i] != ',' || (s[i] == ',' && s[i - 1] == '\\'))
+//		throw AType::ParseException("Key-value pair must be separated with \",\"");
+//	i++;
+//}
 
 void Object::cutBraces(void) {
 	size_t i = 0;
@@ -199,7 +199,7 @@ void Object::cutBraces(void) {
 	const string &raw = getRaw();
 	const size_t len = raw.length();
 	int depth = 0;
-	skipWhitespaces(raw, i);
+	Utils::skipWhitespaces(raw, i);
 
 	if (raw[i] != '{')
 		throw AType::ParseException("Object must start with \"{\"");
@@ -264,24 +264,26 @@ void Object::parse(void) {
 	char typeSignature; 
 	for (size_t i = 0; i < len && currentKey <= keys; i++) {
 		
-		skipWhitespaces(raw, i);	
+		Utils::skipWhitespaces(raw, i);	
 		string rawkey = getRawKey(raw, i);
 		
-		skipWhitespaces(raw, i);
-		checkColon(raw, i);
+		Utils::skipWhitespaces(raw, i);
 		
-		skipWhitespaces(raw, i);
+		if (!Utils::checkColon(raw, i))
+			throw AType::ParseException("Key-value pair must be separated with \",\"");
+		
+		Utils::skipWhitespaces(raw, i);
 		typeSignature = raw[i];
 		string rawvalue = getRawValue(raw, i);
 		
-		skipWhitespaces(raw, i);
+		Utils::skipWhitespaces(raw, i);
 		value = identify(rawvalue);
 
-		skipWhitespaces(raw, i);
+		Utils::skipWhitespaces(raw, i);
 
-		if (currentKey != keys)
-			checkComma(raw, i);
-		
+		if (currentKey != keys && !Utils::checkComma(raw, i))
+			throw AType::ParseException("Key-value pair must be separated with \",\"");
+
 		//check for existence value
 		_map.insert(std::pair<string, AType *>(rawkey, value));
 		currentKey++;

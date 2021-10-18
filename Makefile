@@ -8,8 +8,8 @@ CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic -g
 
 OBJDIR = .obj
 SRCDIR = src
-HEADERS = Array.hpp  AType.hpp  Boolean.hpp  JSON.hpp  Null.hpp  Number.hpp  Object.hpp  String.hpp    
-SOURCES = Array.cpp  AType.cpp  Boolean.cpp  JSON.cpp  Null.cpp  Number.cpp  Object.cpp  String.cpp
+HEADERS = Array.hpp  AType.hpp  Boolean.hpp  JSON.hpp  Null.hpp  Number.hpp  Object.hpp  String.hpp  Utils.hpp  
+SOURCES = Array.cpp  AType.cpp  Boolean.cpp  JSON.cpp  Null.cpp  Number.cpp  Object.cpp  String.cpp  Utils.cpp
 OBJECTS = $(addprefix ${OBJDIR}/, $(SOURCES:.cpp=.o))
 FULL_HEADERS = $(addprefix ${SRCDIR}/, $(HEADERS:.cpp=.o))
 

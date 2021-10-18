@@ -41,6 +41,14 @@ int main(int argc, char *argv[]) {
 		std::cout << "keyBool1: " << keyBool1 << std::endl;
 		std::cout << "keyBool2: " << keyBool2 << std::endl;
 
+		string keyArr_value1 = obj->get("keyArr")->get(0)->toStr();
+		string keyArr_value2 = obj->get("keyArr")->get(1)->toStr();
+		string keyArr_value3 = obj->get("keyArr")->get(2)->toStr();
+
+		std::cout << "keyArr->value1: " << keyArr_value1 << std::endl;
+		std::cout << "keyArr->value2: " << keyArr_value2 << std::endl;
+		std::cout << "keyArr->value3: " << keyArr_value3 << std::endl;
+
 		delete obj;	
 	} 
 	catch (std::exception &e) {

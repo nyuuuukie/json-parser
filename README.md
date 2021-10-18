@@ -48,7 +48,12 @@ make test
 		"key3": 0.1512132
 	},
 	"keyBool1": false,
-	"keyBool2": true
+	"keyBool2": true,
+	"keyArr": [
+		"value1",
+		"value2",
+		"value3"
+	]
 }
 ```
 ## Run
@@ -63,4 +68,7 @@ make test
 # keyObj->key3: 0.151213
 # keyBool1: 0
 # keyBool2: 1
+# keyArr->value1: value1
+# keyArr->value2: value2
+# keyArr->value3: value3
 ```
