@@ -38,6 +38,8 @@ namespace JSON {
 			double toNum(void);
 			const string toStr(void);
 			bool toBool(void);
+			Object *toObj(void);
+			Array *toArr(void);
 
 			//Getters for object and array types
 			AType *get(const string &key);

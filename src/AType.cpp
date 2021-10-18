@@ -51,6 +51,14 @@ namespace JSON {
 		return "";
 	}
 
+	Object *AType::toObj(void) {
+		return dynamic_cast<JSON::Object *>(this);
+	}
+
+	Array *AType::toArr(void) {
+		return dynamic_cast<JSON::Array *>(this);
+	}
+
 	AType *AType::get(const string &key) {
 
 		JSON::Object *obj = dynamic_cast<JSON::Object *>(this);
