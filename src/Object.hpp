@@ -16,6 +16,7 @@ namespace JSON {
 	class Object : public AType
 	{
 		typedef map<string, AType *>::iterator iterator;
+		typedef map<string, AType *>::const_iterator const_iterator;
 
 		private:
 			map<string, AType *> _map;
@@ -29,6 +30,11 @@ namespace JSON {
 			Object(const Object &other);
 			Object &operator=(const Object &other);
 
+			iterator begin(void);
+			iterator end(void);
+			const_iterator begin(void) const;
+			const_iterator end(void) const;
+			
 			iterator getPair(const string &key);
 			size_t countKeys(int depth = 1) const;
 			size_t endOfScope(const std::string &text, size_t beg, char begScope, char endScope);

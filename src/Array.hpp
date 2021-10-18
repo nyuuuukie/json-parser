@@ -17,6 +17,7 @@ namespace JSON {
 	class Array : public AType
 	{
 		typedef std::vector<AType *>::iterator iterator;
+		typedef std::vector<AType *>::const_iterator const_iterator;
 
 		private:
 			std::vector<AType *> _arr;
@@ -29,6 +30,11 @@ namespace JSON {
 
 			Array(const Array &other);
 			Array &operator=(const Array &other);
+
+			iterator begin(void);
+			iterator end(void);
+			const_iterator begin(void) const;
+			const_iterator end(void) const;
 
 			size_t countValues(int depth = 1) const;
 			AType *identify(const string &rawvalue);

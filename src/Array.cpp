@@ -40,6 +40,11 @@ namespace JSON {
 		return *this;
 	}
 
+	Array::iterator Array::begin(void) { return _arr.begin(); }
+	Array::iterator Array::end(void) { return _arr.end(); }
+	Array::const_iterator Array::begin(void) const { return _arr.begin(); }
+	Array::const_iterator Array::end(void) const { return _arr.end(); }
+
 	AType *Array::getValue(const size_t index) const {
 		try
 		{
