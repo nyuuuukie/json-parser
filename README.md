@@ -27,7 +27,7 @@ make re
 clang++ yourfile.cpp libjson.a -o test
 
 #2 option
-clang++ yourfile.cpp -ljson -L <path_to_lib> -o test
+clang++ yourfile.cpp -ljson -L <path_to_lib> -I <path_to_src> -o test
 ```
 
 # Test
