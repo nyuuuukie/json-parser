@@ -20,8 +20,6 @@ namespace JSON {
 			string _name;
 			string _rawjson;
 
-			//AType *_value;
-
 		public:
 			AType(void);
 			AType(const string &name, const string &rawjson);
@@ -32,18 +30,20 @@ namespace JSON {
 
 			void setRaw(const string &);
 			const string &getRaw(void) const;
-			
 			const string &getType(void) const;
 
-			Number *toNum(void);
-			Object *toObj(void);
-			String *toStr(void);
-			Null  *toNull(void);
-			Array *toArray(void);
-			Boolean *toBool(void);
+			//Convert
+			double toNum(void);
+			const string toStr(void);
+			bool toBool(void);
+
+			//Getters for object and array types
+			AType *get(const string &key);
+			AType *get(const size_t index);
 
 			virtual void parse(void) = 0;
 
+			//Exceptions
 			class ParseException : public std::exception {
 				private:
 					string _message;

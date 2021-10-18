@@ -33,28 +33,53 @@ namespace JSON {
 	}
 
 	
-	Number *AType::toNum(void)  {
-		return reinterpret_cast<JSON::Number *>(this);	
+	double AType::toNum(void)  {
+		JSON::Number *ptr = dynamic_cast<JSON::Number *>(this);
+	
+		if (ptr != NULL) {
+			return ptr->getValue();
+		}
+		return strtod("nan", NULL);
 	}
 
-	Object *AType::toObj(void)  {
-		return reinterpret_cast<JSON::Object *>(this);	
+	const string AType::toStr(void)  {
+		JSON::String *ptr = dynamic_cast<JSON::String *>(this);
+	
+		if (ptr != NULL) {
+			return ptr->getValue();
+		}
+		return "";
 	}
 
-	String *AType::toStr(void)  {
-		return reinterpret_cast<JSON::String *>(this);	
+	AType *AType::get(const string &key) {
+
+		JSON::Object *obj = dynamic_cast<JSON::Object *>(this);
+
+		if (obj != NULL) {
+			return obj->getValue(key);
+		} else {
+			return this;
+		}
 	}
 
-	Null  *AType::toNull(void) {
-		return reinterpret_cast<JSON::Null *>(this);	
+	AType *AType::get(const size_t index) {
+
+		JSON::Array *arr = dynamic_cast<JSON::Array *>(this);
+
+		if (arr != NULL) {
+			return arr->getValue(index);
+		} else {
+			return this;
+		}
 	}
 
-	Array *AType::toArray(void) {
-		return reinterpret_cast<JSON::Array *>(this);	
-	}
-
-	Boolean *AType::toBool(void) {
-		return reinterpret_cast<JSON::Boolean *>(this);
+	bool AType::toBool(void) {
+		JSON::Boolean *ptr = dynamic_cast<JSON::Boolean *>(this);
+	
+		if (ptr != NULL) {
+			return ptr->getValue();
+		}
+		return false;
 	}
 
 

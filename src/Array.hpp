@@ -22,9 +22,8 @@ namespace JSON {
 			Array(const Array &other);
 			Array & operator=(const Array &other);
 
-			AType *operator[](int index);
-
 			virtual void parse(void);
+			AType *getValue(const size_t index) const;
 	};
 
 }

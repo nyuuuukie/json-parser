@@ -3,13 +3,30 @@
 namespace JSON {
 
 Object::Object(const string &rawjson) : AType("object", rawjson) {
+	this->nullobj = new Null("null");
 	this->cutBraces();
 	this->parse();
 }
 
-Object::Object(void) : AType("object", "") {}
+Object::Object(void) : AType("object", "") {
+	this->nullobj = new Null("null");
+}
 
-Object::~Object(void) {}
+Object::~Object(void) {
+	delete nullobj;
+
+	iterator beg = _map.begin();
+	iterator end = _map.end();
+
+	for (iterator it = beg; it != end; it++)
+	{
+		if (it->second != NULL) {
+			delete it->second;
+			it->second = NULL;
+		}
+	}
+	_map.clear();
+}
 
 Object::Object(const Object &other) {
 	*this = other;
@@ -35,28 +52,30 @@ Object::iterator Object::getPair(const string &key) {
 	return end;
 }
 
-AType *&Object::operator[](const string &key) {
-	
-	return _map[key];
-	//iterator it = getPair(key);
-	
-	//if (it != _map.end()) {
-	//	return it->second;
-	//}
+AType *Object::getValue(const string &key) const {
+	try
+	{
+		return _map.at(key);
+	}
+	catch(const std::out_of_range& e)
+	{
+		return dynamic_cast<AType *>(nullobj);
+	}
 }
 
 size_t Object::countKeys(int depth) const {
 	size_t count = 0;
+	int currentDepth = 1;
 	
 	const string &raw = getRaw();
 	const size_t len = raw.length();
 
 	for (size_t i = 0; i < len; i++) {
 		if (raw[i] == '{')
-			depth--;
+			currentDepth++;
 		else if (raw[i] == '}')
-			depth++;
-		else if (raw[i] == ':' && depth >= 0)
+			currentDepth--;
+		else if (raw[i] == ':' && currentDepth <= depth)
 			count++;
 	}
 
@@ -239,25 +258,26 @@ void Object::parse(void) {
 	const string &raw = getRaw();
 	const size_t len = raw.length();
 	const size_t keys = countKeys();
-	string rawkey;
-	string rawvalue;
+	
 	size_t currentKey = 1;
 	//if first not { parse error
 	char typeSignature; 
 	for (size_t i = 0; i < len && currentKey <= keys; i++) {
 		
 		skipWhitespaces(raw, i);	
-		rawkey = getRawKey(raw, i);
+		string rawkey = getRawKey(raw, i);
 		
 		skipWhitespaces(raw, i);
 		checkColon(raw, i);
 		
 		skipWhitespaces(raw, i);
 		typeSignature = raw[i];
-		rawvalue = getRawValue(raw, i);
+		string rawvalue = getRawValue(raw, i);
 		
 		skipWhitespaces(raw, i);
 		value = identify(rawvalue);
+
+		skipWhitespaces(raw, i);
 
 		if (currentKey != keys)
 			checkComma(raw, i);

@@ -19,6 +19,7 @@ namespace JSON {
 
 		private:
 			map<string, AType *> _map;
+			Null *nullobj;
 
 		public:
 			Object(void);
@@ -28,13 +29,13 @@ namespace JSON {
 			Object(const Object &other);
 			Object &operator=(const Object &other);
 
-			AType *&operator[](const string &key);
-
 			iterator getPair(const string &key);
 			size_t countKeys(int depth = 1) const;
 			size_t endOfScope(const std::string &text, size_t beg, char begScope, char endScope);
 			AType *identify(const string &rawvalue);
 			
+			AType *getValue(const string &key) const;
+
 			void cutBraces(void);
 
 			string getRawKey(const string &s, size_t &i);

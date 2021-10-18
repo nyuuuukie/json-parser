@@ -20,6 +20,11 @@ namespace JSON {
 		return *this;
 	}
 
+	AType *Array::getValue(const size_t index) const {
+		return _arr[index];
+	}
+
 	void Array::parse(void) {
+		
 	}
 }

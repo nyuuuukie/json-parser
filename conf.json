@@ -1,4 +1,11 @@
 {
-	"keyBool": true,
-	"keyString": "secret123"
+	"keyString": "secret123",
+	"keyNumber": 123.34,
+	"keyObj": {
+		"key1": true,
+		"key2": "string",		
+		"key3": 0.1512132
+	},
+	"keyBool1": false,
+	"keyBool2": true
 }

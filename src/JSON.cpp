@@ -47,7 +47,6 @@ namespace JSON {
 	Object *JSON::parse(void) {
 
 		if (!isValidJSON() || !_rawLoaded) {
-
 			return NULL;
 		}
 
@@ -79,13 +78,7 @@ namespace JSON {
 		bool squareBracketsOK = (std::count(rawjson.begin(), rawjson.end(), '[')
 		 					==	 std::count(rawjson.begin(), rawjson.end(), ']'));
 
-		//bool attributesCountOK = (std::count(rawjson.begin(), rawjson.end(), ':')
-		// 					==	 std::count(rawjson.begin(), rawjson.end(), ',') + 1);
-
-		//bool doubleQuotesOK = (std::count(rawjson.begin(), rawjson.end(), '\"') % 2 == 0);
-		//bool singleQuotesOK = (std::count(rawjson.begin(), rawjson.end(), '\'') % 2 == 0);
-
-		return (curlyBracketsOK && squareBracketsOK); // && doubleQuotesOK && singleQuotesOK && attributesCountOK);
+		return (curlyBracketsOK && squareBracketsOK);
 	}
 
 	bool JSON::isCorrectExt( void ) const {

@@ -26,4 +26,5 @@ namespace JSON
 
 		_value = NULL;		
 	}
+
 }

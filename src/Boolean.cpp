@@ -21,6 +21,10 @@ namespace JSON
 		return *this;
 	}
 
+	//Boolean *Boolean::get(void) {
+	//	return this;
+	//}
+
 	bool Boolean::getValue(void) const {
 		return _value;
 	}

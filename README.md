@@ -40,15 +40,27 @@ make test
 ## conf.json:
 ```json
 {
-	"keyBool": true,
-	"keyString": "secret123"
+	"keyString": "secret123",
+	"keyNumber": 123.34,
+	"keyObj": {
+		"key1": true,
+		"key2": "string",		
+		"key3": 0.1512132
+	},
+	"keyBool1": false,
+	"keyBool2": true
 }
 ```
 ## Run
 ```bash
 # Run test with the created file
 
-./test conf.json    
-# 1
-# secret123
+./test conf.json
+# keyString: secret123
+# keyDouble: 123.34
+# keyObj->key1: 1
+# keyObj->key2: string
+# keyObj->key3: 0.151213
+# keyBool1: 0
+# keyBool2: 1
 ```

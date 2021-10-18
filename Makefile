@@ -18,7 +18,7 @@ all: objdir $(NAME)
 objdir:
 	@if ! [ -d ${OBJDIR} ] ; then mkdir ${OBJDIR} ; fi
 
-test: $(NAME) main.cpp
+test: all main.cpp
 	$(CC) $(CPPFLAGS) main.cpp -ljson -L. -I ${SRCDIR} -o $(TESTNAME)
 
 $(NAME): $(OBJECTS) $(FULL_HEADERS)

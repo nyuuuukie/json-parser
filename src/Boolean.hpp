@@ -21,4 +21,3 @@ namespace JSON {
 			virtual void parse(void);
 	};
 }
-
