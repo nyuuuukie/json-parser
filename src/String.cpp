@@ -32,8 +32,7 @@ namespace JSON
 
 		_value.resize(len);
 		for (size_t i = 0, j = 0; i < len; i++) {
-			
-			if (raw[i] != '\"' || (raw[i] == '\"' && raw[i - 1] == '\\')) {
+			if (raw[i] != '\"' || (raw[i] == '\"' && i != 0 && raw[i - 1] == '\\')) {
 				_value[j++] = raw[i];
 			}
 		}
