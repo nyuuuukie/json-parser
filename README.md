@@ -18,6 +18,31 @@ make re
 ```C++
 // Add this header to your file
 #include "JSON.hpp"
+...
+// Create a json object
+JSON::JSON json(filename);
+
+// Try to load json the file above
+json.loadFile();
+
+// Parse whole file in json object
+JSON::Object *obj = json.parse();
+
+// Use get method to access object field
+//    AType *get(const string &key);     for objects, returns a pointer to json-type value
+//    AType *get(const size_t index);    for arrays, returns a pointer to json-type value
+
+// Convert json type with following methods:
+//    double toNum(void);
+//    const string toStr(void);
+//    bool toBool(void);
+//    Object *toObj(void);
+//    Array *toArr(void);
+
+// Example:
+string keyString = obj->get("keyString")->toStr();
+
+string keyObj_key2 = obj->get("keyObj")->get("key2")->toStr();
 ```
 
 ```bash
