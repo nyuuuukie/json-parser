@@ -30,10 +30,9 @@ namespace JSON
 		const string &raw = getRaw();
 		const size_t len = raw.length();
 
-		_value.resize(len);
-		for (size_t i = 0, j = 0; i < len; i++) {
+		for (size_t i = 0; i < len; i++) {
 			if (raw[i] != '\"' || (raw[i] == '\"' && i != 0 && raw[i - 1] == '\\')) {
-				_value[j++] = raw[i];
+				_value += raw[i];
 			}
 		}
 	}
