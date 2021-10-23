@@ -3,7 +3,7 @@
 	"keyNumber": 123.34,
 	"keyObj": {
 		"key1": true,
-		"key2": "string",		
+		"key2": "string string2",		
 		"key3": 0.1512132
 	},
 	"keyBool1": false,

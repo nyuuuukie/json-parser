@@ -115,6 +115,7 @@ namespace JSON {
 
 		int depthCurly = 0;
 		int depthSquare = 0;
+		bool inString = false;
 
 		size_t len = s.length();
 		size_t start = i;
@@ -132,14 +133,17 @@ namespace JSON {
 				case ']':
 					depthSquare--;
 					break;
+				case '\"':
+					inString = !inString;
+					break;
 				case ',':
-					if (s[i - 1] != '\\' && !depthSquare && !depthCurly)
+					if (s[i - 1] != '\\' && !depthSquare && !depthCurly && !inString)
 						return s.substr(start, i - start);
 				case ' ':
 				case '\n':
 				case '\r':
 				case '\t':
-					if (!depthSquare && !depthCurly)
+					if (!depthSquare && !depthCurly && !inString )
 						return s.substr(start, i - start);
 			}
 		}
@@ -245,7 +249,7 @@ namespace JSON {
 			Utils::skipWhitespaces(raw, i);
 			
 			if (!Utils::checkColon(raw, i))
-				throw AType::ParseException("Key-value pair must be separated with \",\"");
+				throw AType::ParseException("Key-value must be separated with \":\"");
 			
 			Utils::skipWhitespaces(raw, i);
 			typeSignature = raw[i];
