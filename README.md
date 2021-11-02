@@ -53,14 +53,14 @@ clang++ yourfile.cpp libjson.a -o test
 clang++ yourfile.cpp -ljson -L <path_to_lib> -I <path_to_src> -o test
 ```
 
-# Test
-## Compile
+## Test
+### Compile
 ```bash
 # This command will сompile the test version
 make test
 ```
 
-## conf.json:
+### conf.json:
 ```json
 {
 	"keyString": "secret123",
@@ -79,7 +79,7 @@ make test
 	]
 }
 ```
-## Run
+### Run
 ```bash
 # Run test with the created file
 
