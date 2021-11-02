@@ -3,8 +3,6 @@
 ## Dependencies
  * `clang++`
 
-This project was builded with 
-
 ### Compiles the parser
 ```bash
 # This command will сompile the project
