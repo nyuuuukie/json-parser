@@ -12,7 +12,7 @@ make
 make re
 ```
 
-# Usage
+## Usage
 ```C++
 // Add this header to your file
 #include "JSON.hpp"
