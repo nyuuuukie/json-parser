@@ -3,17 +3,14 @@
 namespace JSON {
 
 	Object::Object(const string &rawjson) : AType("object", rawjson) {
-		this->nullobj = new Null("null");
 		this->cutBraces();
 		this->parse();
 	}
 
 	Object::Object(void) : AType("object", "") {
-		this->nullobj = new Null("null");
 	}
 
 	Object::~Object(void) {
-		delete nullobj;
 
 		iterator beg = _map.begin();
 		iterator end = _map.end();
@@ -64,7 +61,7 @@ namespace JSON {
 		}
 		catch(const std::out_of_range& e)
 		{
-			return dynamic_cast<AType *>(nullobj);
+			return dynamic_cast<AType *>(getNull());
 		}
 	}
 
@@ -263,7 +260,7 @@ namespace JSON {
 			if (currentKey != keys && !Utils::checkComma(raw, i))
 				throw AType::ParseException("Key-value pair must be separated with \",\"");
 
-			//check for existence value
+			//check for existence of the value
 			_map.insert(std::pair<string, AType *>(rawkey, value));
 			currentKey++;
 		}

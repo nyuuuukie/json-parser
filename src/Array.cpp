@@ -3,17 +3,14 @@
 namespace JSON {
 
 	Array::Array(const string &rawjson) : AType("array", rawjson) {
-		this->nullobj = new Null("null");
 		this->cutBraces();
 		this->parse();
 	}
 
 	Array::Array(void) : AType("array", "") {
-		this->nullobj = new Null("null");
 	}
 
 	Array::~Array(void) {
-		delete nullobj;
 
 		iterator beg = _arr.begin();
 		iterator end = _arr.end();
@@ -52,7 +49,7 @@ namespace JSON {
 		}
 		catch(const std::out_of_range& e)
 		{
-			return dynamic_cast<AType *>(nullobj);
+			return dynamic_cast<AType *>(getNull());
 		}
 	}
 
@@ -161,7 +158,7 @@ namespace JSON {
 			case 'f':
 				return new JSON::Boolean(rawvalue);
 			case '{':
-				return new JSON::Array(rawvalue);
+				return new JSON::Object(rawvalue);
 			case '[':
 				return new JSON::Array(rawvalue);
 			case 'n':
@@ -197,7 +194,7 @@ namespace JSON {
 			if (currentValue != values && !Utils::checkComma(raw, i))
 				throw AType::ParseException("values must be separated with \",\"");
 
-			//check for existence value
+			//check for existence of the value
 			_arr.push_back(value);
 			currentValue++;
 		}

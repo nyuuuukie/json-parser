@@ -40,6 +40,7 @@ namespace JSON {
 			bool toBool(void);
 			Object *toObj(void);
 			Array *toArr(void);
+			Null *getNull(void) const;
 
 			//Getters for object and array types
 			AType *get(const string &key);

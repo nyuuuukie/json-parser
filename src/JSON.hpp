@@ -8,6 +8,7 @@
 #include <map>
 #include <algorithm>
 
+#include "Null.hpp"
 #include "Array.hpp"
 #include "Object.hpp"
 #include "String.hpp"

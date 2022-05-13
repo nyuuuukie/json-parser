@@ -15,12 +15,12 @@ namespace JSON {
 
 	class Object : public AType
 	{
-		typedef map<string, AType *>::iterator iterator;
-		typedef map<string, AType *>::const_iterator const_iterator;
+		public:
+			typedef map<string, AType *>::iterator iterator;
+			typedef map<string, AType *>::const_iterator const_iterator;
 
 		private:
 			map<string, AType *> _map;
-			Null *nullobj;
 
 		public:
 			Object(void);

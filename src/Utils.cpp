@@ -23,3 +23,9 @@ bool Utils::checkComma(const string &s, size_t &i) {
 	i++;
 	return true;
 }
+
+std::string Utils::to_string(double val) {
+    char buf[100];
+    snprintf(buf, 100, "%f", val);
+    return std::string(buf);
+}

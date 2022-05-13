@@ -5,7 +5,9 @@ namespace JSON {
 	JSON::JSON(void) : _rawLoaded(false) {}
 
 	JSON::JSON(const std::string &filename) 
-	:_filename(filename), _rawLoaded(false) {}
+	:_filename(filename), _rawLoaded(false) {
+		this->loadFile();
+	}
 
 	JSON::~JSON(void) {}
 
@@ -50,9 +52,7 @@ namespace JSON {
 			return NULL;
 		}
 
-		Object *object = new Object(_raw);
-
-		return object;
+		return new Object(_raw);
 	}
 
 	//Setters

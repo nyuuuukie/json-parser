@@ -7,10 +7,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "Object.hpp"
+#include "AType.hpp"
 
 using std::string;
-using std::map;
 
 namespace JSON {
 
@@ -21,7 +20,6 @@ namespace JSON {
 
 		private:
 			std::vector<AType *> _arr;
-			Null *nullobj;
 
 		public:
 			Array(void);
