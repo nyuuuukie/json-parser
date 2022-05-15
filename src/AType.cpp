@@ -105,6 +105,15 @@ namespace JSON {
 		}
 	}
 
+	bool AType::toBool(void) {
+		JSON::Boolean *ptr = dynamic_cast<JSON::Boolean *>(this);
+	
+		if (ptr != NULL) {
+			return ptr->getValue();
+		}
+		return false;
+	}
+
 	AType *AType::get(const string &key) {
 
 		JSON::Object *obj = dynamic_cast<JSON::Object *>(this);
@@ -114,15 +123,6 @@ namespace JSON {
 		} else {
 			return &null;
 		}
-	}
-
-	bool AType::toBool(void) {
-		JSON::Boolean *ptr = dynamic_cast<JSON::Boolean *>(this);
-	
-		if (ptr != NULL) {
-			return ptr->getValue();
-		}
-		return false;
 	}
 
 	AType *AType::get(const size_t index) {
@@ -136,6 +136,21 @@ namespace JSON {
 		}
 	}
 
+	bool AType::isNum(void) {
+		return (dynamic_cast<JSON::Number *>(this) != NULL);
+	}
+
+	bool AType::isStr(void) {
+		return (dynamic_cast<JSON::String *>(this) != NULL);
+	}
+
+	bool AType::isBool(void) {
+		return (dynamic_cast<JSON::Boolean *>(this) != NULL);
+	}
+
+	bool AType::isNull(void) {
+		return (this == &null || this == &nullobj || this == &nullArr);
+	}
 
 	AType::ParseException::ParseException(std::string message) : _message(message) {}
 

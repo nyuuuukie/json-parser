@@ -40,9 +40,14 @@ namespace JSON {
 			bool toBool(void);
 			Object *toObj(void);
 			Array *toArr(void);
-			Null *getNull(void) const;
+			
+			bool isStr(void);
+			bool isNum(void);
+			bool isNull(void);
+			bool isBool(void);
 
 			//Getters for object and array types
+			Null *getNull(void) const;
 			AType *get(const string &key);
 			AType *get(const size_t index);
 
