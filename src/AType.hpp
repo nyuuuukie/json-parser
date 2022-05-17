@@ -45,6 +45,8 @@ namespace JSON {
 			bool isNum(void);
 			bool isNull(void);
 			bool isBool(void);
+			bool isObj(void);
+			bool isArr(void);
 
 			//Getters for object and array types
 			Null *getNull(void) const;

@@ -148,6 +148,14 @@ namespace JSON {
 		return (dynamic_cast<JSON::Boolean *>(this) != NULL);
 	}
 
+	bool AType::isArr(void) {
+		return (dynamic_cast<JSON::Array *>(this) != NULL);
+	}
+
+	bool AType::isObj(void) {
+		return (dynamic_cast<JSON::Object *>(this) != NULL);
+	}
+
 	bool AType::isNull(void) {
 		return (this == &null || this == &nullobj || this == &nullArr);
 	}

@@ -15,8 +15,9 @@ namespace JSON {
 
 	class Array : public AType
 	{
-		typedef std::vector<AType *>::iterator iterator;
-		typedef std::vector<AType *>::const_iterator const_iterator;
+		public:
+			typedef std::vector<AType *>::iterator iterator;
+			typedef std::vector<AType *>::const_iterator const_iterator;
 
 		private:
 			std::vector<AType *> _arr;
