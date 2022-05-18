@@ -17,11 +17,15 @@ make re
 // Add this header to your file
 #include "JSON.hpp"
 ...
-// Create a json object
+// Create a json object and pass filename to it
 JSON::JSON json(filename);
-
-// Try to load json the file above
+// Or (another option) 
+JSON::JSON json;
+json.setFilename(filename);
 json.loadFile();
+
+// An exception will be trown if there were
+// problems with file readability or wrong format
 
 // Parse whole file in json object
 JSON::Object *obj = json.parse();
@@ -36,6 +40,14 @@ JSON::Object *obj = json.parse();
 //    bool toBool(void);
 //    Object *toObj(void);
 //    Array *toArr(void);
+
+// Or check if current type matches expected:
+//    bool isStr(void);
+//    bool isNum(void);
+//    bool isNull(void);
+//    bool isBool(void);
+//    bool isObj(void);
+//    bool isArr(void);
 
 // Example:
 string keyString = obj->get("keyString")->toStr();
