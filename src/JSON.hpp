@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <sys/stat.h>
 
 #include <map>
 #include <algorithm>

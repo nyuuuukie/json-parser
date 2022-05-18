@@ -27,15 +27,22 @@ namespace JSON {
 	// Methods
 	void	JSON::loadFile(void) {
 		
+		if (!isCorrectExt()) {
+			throw JSON::FileException("File extension is not .json");
+		}
+
+		if (!fileExists()) {
+			throw JSON::FileException("File does not exist");
+		}
+
 		ifstream in;
 		in.open(_filename.c_str());
-
 		if (!in.is_open()) {
 			throw JSON::FileException("Cannot open file");
 		}
 
 		_raw = string(std::istreambuf_iterator<char>(in), 
-						  std::istreambuf_iterator<char>());
+						std::istreambuf_iterator<char>());
 
 		_rawLoaded = true;
 	}
@@ -91,11 +98,8 @@ namespace JSON {
 	}
 
 	bool JSON::fileExists( void ) const {
-		std::ifstream test;
-		
-		test.open(_filename.c_str());
-
-		return test.is_open() ? true : false; 
+		struct stat buf;   
+  		return (stat(_filename.c_str(), &buf) == 0); 
 	}
 
 	//Exceptions
