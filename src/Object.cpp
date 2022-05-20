@@ -261,7 +261,10 @@ namespace JSON {
 				throw AType::ParseException("Key-value pair must be separated with \",\"");
 
 			//check for existence of the value
-			_map.insert(std::pair<string, AType *>(rawkey, value));
+			std::pair<JSON::Object::iterator, bool> res = _map.insert(std::pair<string, AType *>(rawkey, value));
+			if (res.second == false) {
+				throw AType::ParseException("Duplicated key \"" + rawkey + "\"");
+			}
 			currentKey++;
 		}
 	}
