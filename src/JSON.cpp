@@ -93,7 +93,6 @@ namespace JSON {
 
 		int extLen = ext.length();
 		int fileLen = _filename.length();
-
 		if (extLen >= fileLen)
 			return false;
 
