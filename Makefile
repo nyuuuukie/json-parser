@@ -4,7 +4,7 @@ NAME = libjson.a
 TESTNAME = test
 
 CC = clang++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic -g
+CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -Wc++11-extensions -Wpedantic -g
 
 OBJDIR = .obj
 SRCDIR = src
