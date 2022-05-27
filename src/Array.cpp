@@ -59,8 +59,12 @@ namespace JSON {
 		int currentDepth = 1;
 
 		const string &raw = getRaw();
+		
+		// Empty array
+		if (raw.find_first_not_of(' ') == std::string::npos)
+			return 0;
+		
 		const size_t len = raw.length();
-
 		for (size_t i = 0; i < len; i++) {
 			if (raw[i] == '[')
 				currentDepth++;
@@ -69,9 +73,7 @@ namespace JSON {
 			else if (raw[i] == ',' && currentDepth <= depth)
 				count++;
 		}
-
-		if (count > 0)
-			count++;
+		count++;
 		
 		return count;
 	}
@@ -194,10 +196,9 @@ namespace JSON {
 			if (currentValue != values && !Utils::checkComma(raw, i))
 				throw AType::ParseException("values must be separated with \",\"");
 
-			//check for existence of the value
 			_arr.push_back(value);
 			currentValue++;
-		}
+		}		
 	}
 
 }
