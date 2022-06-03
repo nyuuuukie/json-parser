@@ -8,5 +8,5 @@
 	},
 	"keyBool1": false,
 	"keyBool2": true,
-	"keyArr": ["value1", "value2", "value3"]
+	"keyArr": ["value1", "value2"]
 }

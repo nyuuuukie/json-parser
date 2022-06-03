@@ -43,14 +43,10 @@ namespace JSON {
 	Array::const_iterator Array::end(void) const { return _arr.end(); }
 
 	AType *Array::getValue(const size_t index) const {
-		try
-		{
-			return _arr[index];
-		}
-		catch(const std::out_of_range& e)
-		{
+		if (index >= _arr.size()) {
 			return dynamic_cast<AType *>(getNull());
 		}
+		return _arr[index];
 	}
 
 	size_t Array::countValues(int depth) const {
@@ -110,7 +106,7 @@ namespace JSON {
 						return s.substr(start, i - start);
 			}
 		}
-		throw AType::ParseException("Cannot get value of Array");
+		return s.substr(start, i - start);
 	}
 
 	void Array::cutBraces(void) {
