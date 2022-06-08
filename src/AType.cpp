@@ -14,7 +14,7 @@ namespace JSON {
 	
 	AType::AType(const string &name, string rawjson) 
 	: _name(name), _rawjson(rawjson) {
-		Utils::trim(rawjson, " \t\n\r");
+		Utils::trim(_rawjson, " \t\n\r");
 	}
 
 	AType::~AType() {}
