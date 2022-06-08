@@ -27,10 +27,10 @@ namespace JSON
 	
 	void Boolean::parse(void) {
 
-		if (getRaw() == "true") {
+		if (getRawRef() == "true") {
 			_value = true;
 		}
-		else if (getRaw() == "false") {
+		else if (getRawRef() == "false") {
 			_value = false;
 		}
 		else {

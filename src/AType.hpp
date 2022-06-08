@@ -24,14 +24,15 @@ namespace JSON {
 
 		public:
 			AType(void);
-			AType(const string &name, const string &rawjson);
+			AType(const string &name, string rawjson);
 			virtual	~AType();
 		
 			AType(const AType &other);
 			AType &operator=(const AType &other);
 
 			void setRaw(const string &);
-			const string &getRaw(void) const;
+			string &getRaw(void);
+			const string &getRawRef(void) const;
 			const string &getType(void) const;
 
 			//Convert

@@ -12,8 +12,10 @@ namespace JSON {
 
 	AType::AType() {}
 	
-	AType::AType(const string &name, const string &rawjson) 
-	: _name(name), _rawjson(rawjson) {}
+	AType::AType(const string &name, string rawjson) 
+	: _name(name), _rawjson(rawjson) {
+		Utils::trim(rawjson, " \t\n\r");
+	}
 
 	AType::~AType() {}
 		
@@ -28,7 +30,11 @@ namespace JSON {
 		return *this;
 	}
 
-	const string &AType::getRaw(void) const {
+	string &AType::getRaw(void) {
+		return _rawjson;
+	}
+
+	const string &AType::getRawRef(void) const {
 		return _rawjson;
 	}
 

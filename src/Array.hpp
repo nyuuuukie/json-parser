@@ -24,7 +24,7 @@ namespace JSON {
 
 		public:
 			Array(void);
-			Array(const string &rawjson);
+			Array(string &rawjson);
 			~Array(void);
 
 			Array(const Array &other);
@@ -36,7 +36,7 @@ namespace JSON {
 			const_iterator end(void) const;
 
 			size_t countValues(int depth = 1) const;
-			AType *identify(const string &rawvalue);
+			AType *identify(string &rawvalue);
 			
 			void cutBraces(void);
 

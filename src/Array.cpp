@@ -2,7 +2,7 @@
 
 namespace JSON {
 
-	Array::Array(const string &rawjson) : AType("array", rawjson) {
+	Array::Array(string &rawjson) : AType("array", rawjson) {
 		this->cutBraces();
 		this->parse();
 	}
@@ -54,7 +54,7 @@ namespace JSON {
 		size_t count = 0;
 		int currentDepth = 1;
 
-		const string &raw = getRaw();
+		const string &raw = getRawRef();
 		
 		// Empty array
 		if (raw.find_first_not_of(' ') == std::string::npos)
@@ -76,76 +76,72 @@ namespace JSON {
 
 	string Array::getRawValue(const string &s, size_t &i) {
 
-		int depthCurly = 0;
-		int depthSquare = 0;
+		int inObject = 0;
+		int inArray = 0;
+		bool inDQuoteString = false;
+		bool inQuoteString = false;
 
-		size_t len = s.length();
 		size_t start = i;
-		for (; i < len; i++) {
+		for (; i < s.length(); i++) {
 			switch (s[i]) {
 				case '{':
-					depthCurly++;
+					if (!Utils::isEscChar(s, i, '{'))
+						inObject++;
 					break;
 				case '}':
-					depthCurly--;
+					if (!Utils::isEscChar(s, i, '}'))
+						inObject--;
 					break;
 				case '[':
-					depthSquare++;
+					if (!Utils::isEscChar(s, i, '['))
+						inArray++;
 					break;
 				case ']':
-					depthSquare--;
+					if (!Utils::isEscChar(s, i, ']'))
+						inArray--;
+					break;
+				case '\'':
+					if (!Utils::isEscChar(s, i, '\''))
+						inQuoteString = !inQuoteString;
+					break;
+				case '\"':
+					if (!Utils::isEscChar(s, i, '\"'))
+						inDQuoteString = !inDQuoteString;
 					break;
 				case ',':
-					if (s[i - 1] != '\\' && !depthSquare && !depthCurly)
+					if (!inArray && !inObject && !inQuoteString && !inDQuoteString && 
+						!Utils::isEscChar(s, i - 1, ',') )
 						return s.substr(start, i - start);
 				case ' ':
 				case '\n':
 				case '\r':
 				case '\t':
-					if (!depthSquare && !depthCurly)
+					if (!inArray && !inObject && !inQuoteString && !inDQuoteString)
 						return s.substr(start, i - start);
 			}
 		}
-		return s.substr(start, i - start);
+		if (inArray || inObject || inQuoteString || inDQuoteString) {
+			throw AType::ParseException("Array:: Unclosed context detected");
+		}
+		return s.substr(start, s.length() - start);
 	}
 
 	void Array::cutBraces(void) {
-		size_t i = 0;
 
-		const string &raw = getRaw();
+		string &raw = getRaw();
 		const size_t len = raw.length();
-		int depth = 0;
-		Utils::skipWhitespaces(raw, i);
 
-		if (raw[i] != '[')
-			throw AType::ParseException("Array must start with \"[\"");
+		if (Utils::isEscChar(raw, 0, '['))
+			throw AType::ParseException("Array:: Beginning must be non-escaped \"[\"");
+		
+		if (Utils::isEscChar(raw, len - 1, ']'))
+			throw AType::ParseException("Array:: Ending must be non-escaped \"]\"");
 
-		size_t start = i;
-		size_t end = i;
-		for (; i < len; i++) {
-			if (raw[i] == '[') {
-				if (!depth)
-					start = i;
-				depth++;
-			}
-			else if (raw[i] == ']') {
-				depth--;
-				if (!depth)
-					end = i;
-			}
-
-			if (depth == 0) {
-				break ;
-			}	
-		}
-
-		if (raw[i] != ']')
-			throw AType::ParseException("Array must end with \"]\"");
-
-		setRaw(raw.substr(start + 1, end - start - 1));
+		raw.erase(len - 1, 1);
+		raw.erase(0, 1);
 	}
 
-	AType *Array::identify(const string &rawvalue) {
+	AType *Array::identify(string &rawvalue) {
 
 		if ((rawvalue[0] == '-' && isdigit(rawvalue[1])) || (isdigit(rawvalue[0])))
 			return new JSON::Number(rawvalue);
@@ -164,7 +160,7 @@ namespace JSON {
 			case '\"':
 				return new JSON::String(rawvalue);
 			default:
-				throw AType::ParseException("Unknown value type");
+				throw AType::ParseException("Array:: Unknown value type");
 		}
 	}
 
@@ -172,16 +168,14 @@ namespace JSON {
 
 		AType *value = NULL;
 
-		const string &raw = getRaw();
+		const string &raw = getRawRef();
 		const size_t len = raw.length();
 		const size_t values = countValues();
 
 		size_t currentValue = 1;
-		char typeSignature; 
-		for (size_t i = 0; i < len && currentValue <= values; i++) {
+		for (size_t i = 0; i < len && currentValue <= values;) {
 
 			Utils::skipWhitespaces(raw, i);
-			typeSignature = raw[i];
 			string rawvalue = getRawValue(raw, i);
 
 			Utils::skipWhitespaces(raw, i);
@@ -189,8 +183,9 @@ namespace JSON {
 
 			Utils::skipWhitespaces(raw, i);
 
-			if (currentValue != values && !Utils::checkComma(raw, i))
-				throw AType::ParseException("values must be separated with \",\"");
+			if (currentValue != values && Utils::isEscChar(raw, i++, ',')) {
+				throw AType::ParseException("Array:: Values must be separated with non-escaped \",\"");
+			}
 
 			_arr.push_back(value);
 			currentValue++;

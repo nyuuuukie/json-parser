@@ -2,7 +2,7 @@
 
 namespace JSON {
 
-	Object::Object(const string &rawjson) : AType("object", rawjson) {
+	Object::Object(string &rawjson) : AType("object", rawjson) {
 		this->cutBraces();
 		this->parse();
 	}
@@ -69,7 +69,7 @@ namespace JSON {
 		size_t count = 0;
 		int currentDepth = 1;
 		
-		const string &raw = getRaw();
+		const string &raw = getRawRef();
 		const size_t len = raw.length();
 
 		for (size_t i = 0; i < len; i++) {
@@ -86,132 +86,104 @@ namespace JSON {
 
 	string Object::getRawKey(const string &s, size_t &i) {
 
-		if (s[i++] != '\"')
-			throw AType::ParseException("Key should start with \"");
+		if (Utils::isEscChar(s, i, '\"')) {
+			throw AType::ParseException("Object:: Key should start with non-escaped \"");
+		}
+		i++;
 
-		size_t start;
-		size_t count = 0;
-		size_t len = s.length();
-		for (start = i; i < len; i++, count++) {
-			if (s[i] == '\"' && s[i - 1] != '\\') {
-				i++;
-				break;
-			}
+		size_t start = i;
+		while (i < s.length() && s[i] != '\"') {
+			i++;
 		}
 		
-		if (s[i - 1] != '\"')
-			throw AType::ParseException("Key should ends with \"");
+		if (Utils::isEscChar(s, i, '\"')) {
+			throw AType::ParseException("Object:: Key should ends with non-escaped \"");
+		}
+		i++;
 
-		if (i == len)
-			throw AType::ParseException("Unexpected end of file");
+		if (i >= s.length()) {
+ 			throw AType::ParseException("Object:: Unexpected end of file");
+		}
 
-		return s.substr(start, count);
+		return s.substr(start, i - start - 1);
 	}
 
 	string Object::getRawValue(const string &s, size_t &i) {
 
-		int depthCurly = 0;
-		int depthSquare = 0;
-		bool inString = false;
+		int inObject = 0;
+		int inArray = 0;
+		bool inDQuoteString = false;
+		bool inQuoteString = false;
 
-		size_t len = s.length();
 		size_t start = i;
-		for (; i < len; i++) {
+		for (; i < s.length(); i++) {
 			switch (s[i]) {
 				case '{':
-					depthCurly++;
+					if (!Utils::isEscChar(s, i, '{'))
+						inObject++;
 					break;
 				case '}':
-					depthCurly--;
+					if (!Utils::isEscChar(s, i, '}'))
+						inObject--;
 					break;
 				case '[':
-					depthSquare++;
+					if (!Utils::isEscChar(s, i, '['))
+						inArray++;
 					break;
 				case ']':
-					depthSquare--;
+					if (!Utils::isEscChar(s, i, ']'))
+						inArray--;
+					break;
+				case '\'':
+					if (!Utils::isEscChar(s, i, '\''))
+						inQuoteString = !inQuoteString;
 					break;
 				case '\"':
-					inString = !inString;
+					if (!Utils::isEscChar(s, i, '\"'))
+						inDQuoteString = !inDQuoteString;
 					break;
 				case ',':
-					if (s[i - 1] != '\\' && !depthSquare && !depthCurly && !inString)
+					if (!inArray && !inObject && !inQuoteString && !inDQuoteString && 
+						!Utils::isEscChar(s, i - 1, ',') )
 						return s.substr(start, i - start);
 				case ' ':
 				case '\n':
 				case '\r':
 				case '\t':
-					if (!depthSquare && !depthCurly && !inString )
+					if (!inArray && !inObject && !inQuoteString && !inDQuoteString)
 						return s.substr(start, i - start);
 			}
 		}
-		throw AType::ParseException("Cannot get value of object");
-	}
-
-
-	size_t Object::endOfScope(const std::string &text, size_t beg, char begScope, char endScope) {
-
-		int depth = 0;
-
-		size_t pos;
-		size_t len = text.length();
-		for (pos = beg; pos < len; pos++) {
-			if (text[pos] == begScope)
-				depth++;
-			else if (text[pos] == endScope) {
-				if (depth > 0) {
-					depth--;
-				}
-				else {
-					break ;
-				}
-			}
+		if (inArray || inObject || inQuoteString || inDQuoteString) {
+			throw AType::ParseException("Object:: Unclosed context detected");
 		}
 
-		return pos;
+		return s.substr(start, s.length() - start);
 	}
 
 	void Object::cutBraces(void) {
-		size_t i = 0;
-		
-		const string &raw = getRaw();
+
+		string &raw = getRaw();
 		const size_t len = raw.length();
-		int depth = 0;
-		Utils::skipWhitespaces(raw, i);
 
-		if (raw[i] != '{')
-			throw AType::ParseException("Object must start with \"{\"");
-		
-		size_t start = i;
-		size_t end = i;
-		for (; i < len; i++) {
-			if (raw[i] == '{') {
-				if (!depth)
-					start = i;
-				depth++;
-			}
-			else if (raw[i] == '}') {
-				depth--;
-				if (!depth)
-					end = i;
-			}
-
-			if (depth == 0) {
-				break ;
-			}	
+		if (Utils::isEscChar(raw, 0, '{')) {
+			throw AType::ParseException("Object:: Beginning must be non-escaped \"{\"");
 		}
-		if (raw[i] != '}')
-			throw AType::ParseException("Object must end with \"}\"");
+		
+		if (Utils::isEscChar(raw, len - 1, '}')) {
+			throw AType::ParseException("Object:: Ending must be non-escaped \"}\"");
+		}
 
-		setRaw(raw.substr(start + 1, end - start - 1));
+		raw.erase(len - 1, 1);
+		raw.erase(0, 1);
 	}
 
-	AType *Object::identify(const string &rawvalue) {
+	AType *Object::identify(string &rawvalue) {
 		
 		if ((rawvalue[0] == '-' && isdigit(rawvalue[1])) || (isdigit(rawvalue[0])))
 			return new JSON::Number(rawvalue);
 
-		switch (rawvalue[0])
-		{
+		switch (rawvalue[0]) {
 			case 't':
 			case 'f':
 				return new JSON::Boolean(rawvalue);
@@ -224,46 +196,44 @@ namespace JSON {
 			case '\"':
 				return new JSON::String(rawvalue);
 			default:
-				throw AType::ParseException("Unknown value type");
+				throw AType::ParseException("Object:: Unknown value type");
 		}
 	}
 
 	void Object::parse(void) {
 		
 		AType *value = NULL;
-		
-		const string &raw = getRaw();
+
+		const string &raw = getRawRef();
 		const size_t len = raw.length();
 		const size_t keys = countKeys();
 		
 		size_t currentKey = 1;
-		char typeSignature; 
-		for (size_t i = 0; i < len && currentKey <= keys; i++) {
+		for (size_t i = 0; i < len && currentKey <= keys;) {
 			
 			Utils::skipWhitespaces(raw, i);	
 			string rawkey = getRawKey(raw, i);
-			
 			Utils::skipWhitespaces(raw, i);
 			
-			if (!Utils::checkColon(raw, i))
-				throw AType::ParseException("Key-value must be separated with \":\"");
+			if (Utils::isEscChar(raw, i++, ':')) {
+				throw AType::ParseException("Object:: Key-value must be separated with non-escaped \":\"");	
+			}
 			
 			Utils::skipWhitespaces(raw, i);
-			typeSignature = raw[i];
 			string rawvalue = getRawValue(raw, i);
-			
 			Utils::skipWhitespaces(raw, i);
+	
 			value = identify(rawvalue);
-
 			Utils::skipWhitespaces(raw, i);
 
-			if (currentKey != keys && !Utils::checkComma(raw, i))
-				throw AType::ParseException("Key-value pair must be separated with \",\"");
+			if (currentKey != keys && Utils::isEscChar(raw, i++, ',')) {
+				throw AType::ParseException("Object:: Key-value pairs must be separated with non-escaped \",\"");
+			}
 
-			//check for existence of the value
-			std::pair<JSON::Object::iterator, bool> res = _map.insert(std::pair<string, AType *>(rawkey, value));
+			std::pair<JSON::Object::iterator, bool> res;
+			res = _map.insert(std::make_pair(rawkey, value));
 			if (res.second == false) {
-				throw AType::ParseException("Duplicated key \"" + rawkey + "\"");
+				throw AType::ParseException("Object:: Duplicated key \"" + rawkey + "\"");
 			}
 			currentKey++;
 		}

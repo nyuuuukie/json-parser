@@ -24,7 +24,7 @@ namespace JSON {
 
 		public:
 			Object(void);
-			Object(const string &rawjson);
+			Object(string &rawjson);
 			~Object(void);
 
 			Object(const Object &other);
@@ -38,7 +38,7 @@ namespace JSON {
 			iterator getPair(const string &key);
 			size_t countKeys(int depth = 1) const;
 			size_t endOfScope(const std::string &text, size_t beg, char begScope, char endScope);
-			AType *identify(const string &rawvalue);
+			AType *identify(string &rawvalue);
 			
 			AType *getValue(const string &key) const;
 

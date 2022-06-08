@@ -27,7 +27,7 @@ namespace JSON
 
 	void Number::parse(void) {
 
-		const string &raw = getRaw();
+		const string &raw = getRawRef();
 
 		char *end = 0;
 		double num = std::strtod(raw.c_str(), &end);

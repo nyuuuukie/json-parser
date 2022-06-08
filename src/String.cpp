@@ -27,7 +27,7 @@ namespace JSON
 
 	void String::parse(void) {
 
-		const string &raw = getRaw();
+		const string &raw = getRawRef();
 		const size_t len = raw.length();
 
 		for (size_t i = 0; i < len; i++) {

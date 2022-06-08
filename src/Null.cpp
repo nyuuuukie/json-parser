@@ -21,7 +21,7 @@ namespace JSON
 
 	void Null::parse(void) {
 
-		if (getRaw() != "null")
+		if (getRawRef() != "null")
 			throw ParseException("Failed to parse null");
 
 		_value = NULL;		
