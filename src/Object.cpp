@@ -65,22 +65,52 @@ namespace JSON {
 		}
 	}
 
-	size_t Object::countKeys(int depth) const {
-		size_t count = 0;
-		int currentDepth = 1;
+	size_t Object::countKeys(void) const {
 		
-		const string &raw = getRawRef();
-		const size_t len = raw.length();
+		size_t count = 0;
+		int inObject = 0;
+		int inArray = 0;
+		bool inDQuoteString = false;
+		bool inQuoteString = false;
+		
+		const string &s = getRawRef();
+		const size_t len = s.length();
 
 		for (size_t i = 0; i < len; i++) {
-			if (raw[i] == '{')
-				currentDepth++;
-			else if (raw[i] == '}')
-				currentDepth--;
-			else if (raw[i] == ':' && currentDepth <= depth)
-				count++;
+			switch (s[i]) {
+				case '{':
+					if (!Utils::isEscChar(s, i, '{'))
+						inObject++;
+					break;
+				case '}':
+					if (!Utils::isEscChar(s, i, '}'))
+						inObject--;
+					break;
+				case '[':
+					if (!Utils::isEscChar(s, i, '['))
+						inArray++;
+					break;
+				case ']':
+					if (!Utils::isEscChar(s, i, ']'))
+						inArray--;
+					break;
+				case '\'':
+					if (!Utils::isEscChar(s, i, '\''))
+						inQuoteString = !inQuoteString;
+					break;
+				case '\"':
+					if (!Utils::isEscChar(s, i, '\"'))
+						inDQuoteString = !inDQuoteString;
+					break;
+				case ':':
+					if (!Utils::isEscChar(s, i, ':') && !inArray && !inObject &&
+						!inQuoteString && !inDQuoteString)
+						count++;
+					break;
+				default:
+					break;
+			}
 		}
-
 		return count;
 	}
 
