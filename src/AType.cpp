@@ -46,6 +46,14 @@ namespace JSON {
 		return _name;
 	}
 	
+	void AType::setKey(const string &key) {
+		_key = key;
+	}
+
+	const string &AType::getKey(void) {
+		return _key;
+	}
+
 	double AType::toNum(void)  {
 		JSON::Number *p1 = dynamic_cast<JSON::Number *>(this);
 		if (p1 != NULL) {

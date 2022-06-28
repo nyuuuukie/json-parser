@@ -224,6 +224,7 @@ namespace JSON {
 			Utils::skipWhitespaces(raw, i);
 	
 			value = identify(rawvalue);
+			value->setKey(rawkey);
 			Utils::skipWhitespaces(raw, i);
 
 			if (currentKey != keys && Utils::isEscChar(raw, i++, ',')) {

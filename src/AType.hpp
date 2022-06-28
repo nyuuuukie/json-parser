@@ -19,6 +19,7 @@ namespace JSON {
 	class AType
 	{
 		private:
+			string _key;
 			string _name;
 			string _rawjson;
 
@@ -32,6 +33,10 @@ namespace JSON {
 
 			void setRaw(const string &);
 			string &getRaw(void);
+
+			void setKey(const string &);
+			const string &getKey(void);
+
 			const string &getRawRef(void) const;
 			const string &getType(void) const;
 
