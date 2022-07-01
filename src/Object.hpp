@@ -36,7 +36,7 @@ namespace JSON {
 			const_iterator end(void) const;
 			
 			iterator getPair(const string &key);
-			size_t countKeys(int depth = 1) const;
+			size_t countKeys(void) const;
 			size_t endOfScope(const std::string &text, size_t beg, char begScope, char endScope);
 			AType *identify(string &rawvalue);
 			
