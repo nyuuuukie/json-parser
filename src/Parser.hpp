@@ -21,7 +21,7 @@ using std::ifstream;
 
 namespace JSON {
 
-class JSON
+class Parser
 {
 	private:
 		string	_filename;
@@ -29,12 +29,12 @@ class JSON
 		bool	_rawLoaded;
 
 	public:
-		JSON(void);
-		JSON(const string &filename);
-		~JSON();
+		Parser(void);
+		Parser(const string &filename);
+		~Parser();
 
-		JSON(const JSON &other);
-		JSON &operator=(const JSON &other);
+		Parser(const Parser &other);
+		Parser &operator=(const Parser &other);
 
 		// Methods
 		void loadFile(void);

@@ -1,21 +1,21 @@
-#include "JSON.hpp"
+#include "Parser.hpp"
 
 namespace JSON {
 
-	JSON::JSON(void) : _rawLoaded(false) {}
+	Parser::Parser(void) : _rawLoaded(false) {}
 
-	JSON::JSON(const std::string &filename) 
+	Parser::Parser(const std::string &filename) 
 	:_filename(filename), _rawLoaded(false) {
 		this->loadFile();
 	}
 
-	JSON::~JSON(void) {}
+	Parser::~Parser(void) {}
 
-	JSON::JSON(const JSON &other) { 
+	Parser::Parser(const Parser &other) { 
 		*this = other;
 	}
 
-	JSON &JSON::operator=(const JSON &other) {
+	Parser &Parser::operator=(const Parser &other) {
 		if (this != &other) {
 			_filename = other._filename;
 			_raw = other._raw;
@@ -25,20 +25,20 @@ namespace JSON {
 	}
 
 	// Methods
-	void	JSON::loadFile(void) {
+	void	Parser::loadFile(void) {
 		
 		if (!isCorrectExt()) {
-			throw JSON::FileException("Error:: File extension is not .json");
+			throw Parser::FileException("Error:: File extension is not .json");
 		}
 
 		if (!fileExists()) {
-			throw JSON::FileException("Error:: File does not exist");
+			throw Parser::FileException("Error:: File does not exist");
 		}
 
 		ifstream in;
 		in.open(_filename.c_str());
 		if (!in.is_open()) {
-			throw JSON::FileException("Error:: Cannot open file");
+			throw Parser::FileException("Error:: Cannot open file");
 		}
 
 		_raw = string(std::istreambuf_iterator<char>(in), 
@@ -47,13 +47,13 @@ namespace JSON {
 		_rawLoaded = true;
 	}
 
-	void	JSON::setRaw(const std::string &rawjson) {
+	void	Parser::setRaw(const std::string &rawjson) {
 		_raw = rawjson;
 
 		_rawLoaded = true;
 	}
 
-	Object *JSON::parse(void) {
+	Object *Parser::parse(void) {
 
 		if (!_rawLoaded) {
 			return NULL;
@@ -63,21 +63,21 @@ namespace JSON {
 	}
 
 	//Setters
-	void JSON::setFilename(const std::string &filename) {
+	void Parser::setFilename(const std::string &filename) {
 		_filename = filename;
 	}
 
 	//Getters
-	const std::string &JSON::getFilename(void) const {
+	const std::string &Parser::getFilename(void) const {
 		return _filename;
 	}
 
 	//Checkers
-	bool JSON::isValidJSON( void ) const {
+	bool Parser::isValidJSON( void ) const {
 		return isValidJSON(_raw);
 	}
 
-	bool JSON::isValidJSON( const string &rawjson ) const {
+	bool Parser::isValidJSON( const string &rawjson ) const {
 
 		bool curlyBracketsOK = (std::count(rawjson.begin(), rawjson.end(), '{') 
 							==	std::count(rawjson.begin(), rawjson.end(), '}'));
@@ -88,7 +88,7 @@ namespace JSON {
 		return (curlyBracketsOK && squareBracketsOK);
 	}
 
-	bool JSON::isCorrectExt( void ) const {
+	bool Parser::isCorrectExt( void ) const {
 		std::string ext = ".json";
 
 		int extLen = ext.length();
@@ -99,17 +99,17 @@ namespace JSON {
 		return (_filename.substr(fileLen - extLen, extLen) == ext);
 	}
 
-	bool JSON::fileExists( void ) const {
+	bool Parser::fileExists( void ) const {
 		struct stat buf;   
   		return (stat(_filename.c_str(), &buf) == 0); 
 	}
 
 	//Exceptions
-	JSON::FileException::FileException(std::string message) : _message(message) {}
+	Parser::FileException::FileException(std::string message) : _message(message) {}
 
-	JSON::FileException::~FileException() throw() {}
+	Parser::FileException::~FileException() throw() {}
 
-	const char *JSON::FileException::what(void) const throw() {
+	const char *Parser::FileException::what(void) const throw() {
 		return _message.c_str();
 	}
 
