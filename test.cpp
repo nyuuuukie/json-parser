@@ -1,4 +1,4 @@
-#include "JSON.hpp"
+#include "Parser.hpp"
 
 int main(int argc, char *argv[]) {
 
@@ -10,13 +10,13 @@ int main(int argc, char *argv[]) {
 		string filename(argv[1]);
 		
 		//Creating json object
-		JSON::JSON json(filename);
+		JSON::Parser parser(filename);
 
 		//Trying to load json file
-		json.loadFile();
+		parser.loadFile();
 
 		//Parsing whole file in json object
-		JSON::Object *obj = json.parse();
+		JSON::Object *obj = parser.parse();
 
 		//Using method get to access object fields and converting it to primitive type
 		// string keyString = obj->get("keyString")->toStr();
@@ -49,6 +49,10 @@ int main(int argc, char *argv[]) {
 		std::cout << "keyArr->value1: " << keyArr_value1 << std::endl;
 		std::cout << "keyArr->value2: " << keyArr_value2 << std::endl;
 		std::cout << "keyArr->value3: " << keyArr_value3 << std::endl;
+		
+		
+		string proxy = obj->get("proxytest")->get("proxy")->get("pass")->toStr();
+		std::cout << "pass: " << proxy << std::endl;
 
 		delete obj;	
 	} 

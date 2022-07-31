@@ -239,7 +239,8 @@ namespace JSON {
 		const size_t keys = countKeys();
 		
 		size_t currentKey = 1;
-		for (size_t i = 0; i < len && currentKey <= keys;) {
+		size_t i = 0;
+		for (; i < len && currentKey <= keys;) {
 			
 			Utils::skipWhitespaces(raw, i);	
 			string rawkey = getRawKey(raw, i);
@@ -267,6 +268,10 @@ namespace JSON {
 				throw AType::ParseException("Object:: Duplicated key \"" + rawkey + "\"");
 			}
 			currentKey++;
+		}
+		Utils::skipWhitespaces(raw, i);
+		if (raw[i] != '\0') {
+			throw AType::ParseException("Object:: Unexpected end, maybe \":\" was missed\n" + raw.substr(i));
 		}
 	}
 
