@@ -15,20 +15,21 @@ make re
 ## Usage
 ```C++
 // Add this header to your file
-#include "JSON.hpp"
+#include "Parser.hpp"
 ...
 // Create a json object and pass filename to it
-JSON::JSON json(filename);
+JSON::Parser prs(filename);
+
 // Or (another option) 
-JSON::JSON json;
-json.setFilename(filename);
-json.loadFile();
+JSON::Parser prs;
+prs.setFilename(filename);
+prs.loadFile();
 
 // An exception will be trown if there were
 // problems with file readability or wrong format
 
 // Parse whole file in json object
-JSON::Object *obj = json.parse();
+JSON::Object *obj = prs.parse();
 
 // Use get method to access object field
 //    AType *get(const string &key);     for objects, returns a pointer to json-type value
