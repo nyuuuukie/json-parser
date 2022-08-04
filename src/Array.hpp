@@ -35,7 +35,7 @@ namespace JSON {
 			const_iterator begin(void) const;
 			const_iterator end(void) const;
 
-			size_t countValues(int depth = 1) const;
+			size_t countValues(void) const;
 			AType *identify(string &rawvalue);
 			
 			void cutBraces(void);

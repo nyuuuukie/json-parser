@@ -49,28 +49,57 @@ namespace JSON {
 		return _arr[index];
 	}
 
-	size_t Array::countValues(int depth) const {
+	size_t Array::countValues(void) const {
 
 		size_t count = 0;
-		int currentDepth = 1;
-
-		const string &raw = getRawRef();
+		int inObject = 0;
+		int inArray = 0;
+		bool inDQuoteString = false;
+		bool inQuoteString = false;
 		
+		const string &s = getRawRef();
+		const size_t len = s.length();
+
 		// Empty array
-		if (raw.find_first_not_of(' ') == std::string::npos)
+		if (s.find_first_not_of(' ') == std::string::npos)
 			return 0;
 		
-		const size_t len = raw.length();
 		for (size_t i = 0; i < len; i++) {
-			if (raw[i] == '[')
-				currentDepth++;
-			else if (raw[i] == ']')
-				currentDepth--;
-			else if (raw[i] == ',' && currentDepth <= depth)
-				count++;
+			switch (s[i]) {
+				case '{':
+					if (!Utils::isEscChar(s, i, '{'))
+						inObject++;
+					break;
+				case '}':
+					if (!Utils::isEscChar(s, i, '}'))
+						inObject--;
+					break;
+				case '[':
+					if (!Utils::isEscChar(s, i, '['))
+						inArray++;
+					break;
+				case ']':
+					if (!Utils::isEscChar(s, i, ']'))
+						inArray--;
+					break;
+				case '\'':
+					if (!Utils::isEscChar(s, i, '\''))
+						inQuoteString = !inQuoteString;
+					break;
+				case '\"':
+					if (!Utils::isEscChar(s, i, '\"'))
+						inDQuoteString = !inDQuoteString;
+					break;
+				case ',':
+					if (!Utils::isEscChar(s, i, ',') && !inArray && !inObject &&
+						!inQuoteString && !inDQuoteString)
+						count++;
+					break;
+				default:
+					break;
+			}
 		}
 		count++;
-		
 		return count;
 	}
 
