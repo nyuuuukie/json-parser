@@ -2,127 +2,63 @@
 
 namespace JSON {
 
-	Parser::Parser(void) : _rawLoaded(false) {}
+bool
+isCorrectExt(const std::string &filename) {
+	std::string ext = ".json";
 
-	Parser::Parser(const std::string &filename) 
-	:_filename(filename), _rawLoaded(false) {
-		this->loadFile();
+	int extLen = ext.length();
+	int fileLen = filename.length();
+	if (extLen >= fileLen)
+		return false;
+
+	return (filename.substr(fileLen - extLen, extLen) == ext);
+}
+
+bool
+fileExists(const std::string &filename) {
+	struct stat buf;   
+	return (stat(filename.c_str(), &buf) == 0); 
+}
+
+Object *
+parseFile(const std::string &filename) {
+
+	if (!isCorrectExt(filename)) {
+		throw std::runtime_error("Error:: File extension is not .json");
 	}
 
-	Parser::~Parser(void) {}
-
-	Parser::Parser(const Parser &other) { 
-		*this = other;
+	if (!fileExists(filename)) {
+		throw std::runtime_error("Error:: File " + filename + " does not exist");
 	}
 
-	Parser &Parser::operator=(const Parser &other) {
-		if (this != &other) {
-			_filename = other._filename;
-			_raw = other._raw;
-			_rawLoaded = other._rawLoaded;
-		}
-		return *this;
+	ifstream in(filename.c_str());
+	if (!in.is_open()) {
+		throw std::runtime_error("Error:: Cannot open file " + filename);
 	}
 
-	// Methods
-	void	Parser::loadFile(void) {
-		
-		if (!isCorrectExt()) {
-			throw Parser::FileException("Error:: File extension is not .json");
-		}
+	std::string raw = string(std::istreambuf_iterator<char>(in), 
+				  			 std::istreambuf_iterator<char>());
 
-		if (!fileExists()) {
-			throw Parser::FileException("Error:: File does not exist");
-		}
+	return parseRaw(raw);
+}
 
-		ifstream in;
-		in.open(_filename.c_str());
-		if (!in.is_open()) {
-			throw Parser::FileException("Error:: Cannot open file");
-		}
+Object *
+parseRaw(std::string &raw) {
+	
+	Object *obj = new Object(raw);
 
-		_raw = string(std::istreambuf_iterator<char>(in), 
-						std::istreambuf_iterator<char>());
-
-		_rawLoaded = true;
+	if (obj == NULL) {
+		throw std::runtime_error("Object:: Allocation failed");
 	}
 
-	void	Parser::setRaw(const std::string &rawjson) {
-		_raw = rawjson;
-
-		_rawLoaded = true;
+	try {
+		obj->parse();
+	} catch (std::exception &e) {
+		delete obj;
+		throw std::runtime_error(e.what());
 	}
 
-	Object *Parser::parse(void) {
-
-		if (!_rawLoaded) {
-			return NULL;
-		}
-
-		Object *obj = new Object(_raw);
-		if (obj == NULL) {
-			throw std::runtime_error("Object:: Allocation failed");
-		}
-
-		try {
-			obj->parse();
-		} catch (std::exception &e) {
-			delete obj;
-			throw std::runtime_error(e.what());
-		}
-
-		return obj;
-	}
-
-	//Setters
-	void Parser::setFilename(const std::string &filename) {
-		_filename = filename;
-	}
-
-	//Getters
-	const std::string &Parser::getFilename(void) const {
-		return _filename;
-	}
-
-	//Checkers
-	bool Parser::isValidJSON( void ) const {
-		return isValidJSON(_raw);
-	}
-
-	bool Parser::isValidJSON( const string &rawjson ) const {
-
-		bool curlyBracketsOK = (std::count(rawjson.begin(), rawjson.end(), '{') 
-							==	std::count(rawjson.begin(), rawjson.end(), '}'));
-
-		bool squareBracketsOK = (std::count(rawjson.begin(), rawjson.end(), '[')
-		 					==	 std::count(rawjson.begin(), rawjson.end(), ']'));
-
-		return (curlyBracketsOK && squareBracketsOK);
-	}
-
-	bool Parser::isCorrectExt( void ) const {
-		std::string ext = ".json";
-
-		int extLen = ext.length();
-		int fileLen = _filename.length();
-		if (extLen >= fileLen)
-			return false;
-
-		return (_filename.substr(fileLen - extLen, extLen) == ext);
-	}
-
-	bool Parser::fileExists( void ) const {
-		struct stat buf;   
-  		return (stat(_filename.c_str(), &buf) == 0); 
-	}
-
-	//Exceptions
-	Parser::FileException::FileException(std::string message) : _message(message) {}
-
-	Parser::FileException::~FileException() throw() {}
-
-	const char *Parser::FileException::what(void) const throw() {
-		return _message.c_str();
-	}
+	return obj;
+}
 
 }
