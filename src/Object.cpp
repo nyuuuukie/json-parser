@@ -3,8 +3,6 @@
 namespace JSON {
 
 	Object::Object(string &rawjson) : AType("object", rawjson) {
-		this->cutBraces();
-		this->parse();
 	}
 
 	Object::Object(void) : AType("object", "") {
@@ -210,28 +208,50 @@ namespace JSON {
 
 	AType *Object::identify(string &rawvalue) {
 		
-		if ((rawvalue[0] == '-' && isdigit(rawvalue[1])) || (isdigit(rawvalue[0])))
-			return new JSON::Number(rawvalue);
+		AType *val = NULL;
 
-		switch (rawvalue[0]) {
-			case 't':
-			case 'f':
-				return new JSON::Boolean(rawvalue);
-			case '{':
-				return new JSON::Object(rawvalue);
-			case '[':
-				return new JSON::Array(rawvalue);
-			case 'n':
-				return new JSON::Null(rawvalue);
-			case '\"':
-				return new JSON::String(rawvalue);
-			default:
-				throw AType::ParseException("Object:: Unknown value type");
+		if ((rawvalue[0] == '-' && isdigit(rawvalue[1])) || (isdigit(rawvalue[0]))) {
+			val = new JSON::Number(rawvalue);
+		} else {
+			switch (rawvalue[0]) {
+				case 't':
+				case 'f':
+					val = new JSON::Boolean(rawvalue);
+					break ;
+				case '{':
+					val = new JSON::Object(rawvalue);
+					break ;
+				case '[':
+					val = new JSON::Array(rawvalue);
+					break ;
+				case 'n':
+					val = new JSON::Null(rawvalue);
+					break ;
+				case '\"':
+					val = new JSON::String(rawvalue);
+					break ;
+				default:
+					throw AType::ParseException("Object:: Unknown value type");
+			}
 		}
+
+		if (val == NULL) {
+			throw std::runtime_error("Object:: Allocation failed");
+		}
+
+		try {
+			val->parse();
+		} catch (std::exception &e) {
+			delete val;
+			throw std::runtime_error(std::string(e.what()));
+		}
+
+		return val;
 	}
 
 	void Object::parse(void) {
-		
+		this->cutBraces();
+	
 		AType *value = NULL;
 
 		const string &raw = getRawRef();
@@ -265,6 +285,7 @@ namespace JSON {
 			std::pair<JSON::Object::iterator, bool> res;
 			res = _map.insert(std::make_pair(rawkey, value));
 			if (res.second == false) {
+				delete value;
 				throw AType::ParseException("Object:: Duplicated key \"" + rawkey + "\"");
 			}
 			currentKey++;

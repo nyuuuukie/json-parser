@@ -3,7 +3,6 @@
 namespace JSON
 {
 	Boolean::Boolean(const string &rawjson) : AType("boolean", rawjson) {
-		this->parse();
 	}
 
 	Boolean::~Boolean() {}

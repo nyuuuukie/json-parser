@@ -3,7 +3,6 @@
 namespace JSON
 {
 	String::String(const string &rawjson) : AType("string", rawjson) {
-		this->parse();
 	}
 
 	String::~String() {}

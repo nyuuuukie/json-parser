@@ -59,7 +59,19 @@ namespace JSON {
 			return NULL;
 		}
 
-		return new Object(_raw);
+		Object *obj = new Object(_raw);
+		if (obj == NULL) {
+			throw std::runtime_error("Object:: Allocation failed");
+		}
+
+		try {
+			obj->parse();
+		} catch (std::exception &e) {
+			delete obj;
+			throw std::runtime_error(e.what());
+		}
+
+		return obj;
 	}
 
 	//Setters

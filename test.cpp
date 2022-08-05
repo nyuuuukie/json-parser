@@ -5,6 +5,7 @@ int main(int argc, char *argv[]) {
 	if (argc != 2)
 		return 1;
 	
+	JSON::Object *obj = NULL;
 	try {
 		string filename(argv[1]);
 		
@@ -12,7 +13,7 @@ int main(int argc, char *argv[]) {
 		JSON::Parser parser(filename);
 
 		// Parsing whole file in json object
-		JSON::Object *obj = parser.parse();
+		obj = parser.parse();
 
 		// Using method get to access object fields and converting it to primitive type
 		// string keyString = obj->get("keyString")->toStr();
@@ -44,11 +45,14 @@ int main(int argc, char *argv[]) {
 		std::cout << "keyArr->value1: " << keyArr_value1 << std::endl;
 		std::cout << "keyArr->value2: " << keyArr_value2 << std::endl;
 		std::cout << "keyArr->value3: " << keyArr_value3 << std::endl;
-
-		delete obj;	
+	
 	} 
 	catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;
+	}
+
+	if (obj != NULL) {
+		delete obj;
 	}
 
 	return 0;

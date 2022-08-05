@@ -3,7 +3,6 @@
 namespace JSON
 {
 	Number::Number(const string &rawjson) : AType("number", rawjson) {
-		this->parse();
 	}
 
 	Number::~Number() {}
