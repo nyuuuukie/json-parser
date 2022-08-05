@@ -67,7 +67,7 @@ namespace JSON {
 		return strtod("nan", NULL);
 	}
 
-	const string AType::toStr(void)  {
+	string AType::toStr(void)  {
 
 		JSON::String *p = dynamic_cast<JSON::String *>(this);
 		if (p != NULL) {

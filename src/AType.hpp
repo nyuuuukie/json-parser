@@ -42,7 +42,7 @@ namespace JSON {
 
 			//Convert
 			double toNum(void);
-			const string toStr(void);
+			string toStr(void);
 			bool toBool(void);
 			Object *toObj(void);
 			Array *toArr(void);
