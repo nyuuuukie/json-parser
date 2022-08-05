@@ -13,61 +13,87 @@ make re
 ```
 
 ## Usage
+1. Add parser object
 ```C++
-// Add this header to your file
 #include "Parser.hpp"
-...
-// Create a json object and pass filename to it;
-// An exception will be trown in case of
-// problems with file reading or parsing
-JSON::Parser prs(filename);
 
-// Another option 
-// JSON::Parser prs;
-// prs.setFilename(filename);
-// prs.loadFile();
+int main() {
 
-// Parse whole file in json object
-JSON::Object *obj = prs.parse();
+	JSON::Object *glob = NULL;
 
-// Get values:
-string k1 = obj->get("keyString")->toStr();
-string k2 = obj->get("keyObj")->get("key2")->toStr();
-string k3 = obj->get("keyArr")->get(2)->toStr();
+	// An exception will be trown in case of
+	// problems with file reading or parsing
+	try {
+		glob = JSON::parseFile(filename);
+	} catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
+		return 1;
+	}
+	return 0;
+}
+
 
 ```
 
+2. Get the values you need so much:
+```C++
+	// Directly accessing fields:
+	string v1 = glob->get("keyStr")->toStr();
+	double v2 = glob->get("keyObj")->get("keyNum")->toNum();
+	bool k3   = glob->get("keyArr")->get(2)->toBool();
+	
+	// Or iterating through them:
+
+	// JSON::Object
+	for (JSON::Object::iterator it = glob->begin(); it != glob->end(); ++it) {
+		// Prints all keys,value pairs in object 
+		std::cout << it->first << ": " << it->second->toStr() << std::endl;
+	}
+
+	// JSON::Array 
+	JSON::Array *arr = glob->get("keyArr")->toArr();
+	for (JSON::Array::iterator it = arr->begin(); it != arr->end(); ++it) {
+		// Prints all values of the array 
+		std::cout << (*it)->toStr() << std::endl;
+	}
+```
+
+3. Compile your project with library
 ```bash
-#Compile project with libjson.a
+	#1 option
+	clang++ yourfile.cpp libjson.a -o test
 
-#1 option
-clang++ yourfile.cpp libjson.a -o test
-
-#2 option
-clang++ yourfile.cpp -ljson -L <path_to_lib> -I <path_to_src> -o test
+	#2 option
+	clang++ yourfile.cpp -ljson -L <path_to_lib> -I <path_to_src> -o test
 ```
 
 ## API
 
 ```C++
-// Use get method to access object field:
-AType *get(const string &key);  // For objects
-AType *get(const size_t index); // For arrays
+	// Reading json file and parsing it
+	Object *JSON::parseFile(const std::string &filename);
 
-// Convert json type with following methods:
-double	toNum(void);
-string	toStr(void);
-bool	toBool(void);
-Object *toObj(void);
-Array  *toArr(void);
+	// Parses raw json (must be an object)
+	Object *JSON::parseRaw(const std::string &raw);
 
-// Or check if current type matches expected:
-bool	isStr(void);
-bool	isNum(void);
-bool	isNull(void);
-bool	isBool(void);
-bool	isObj(void);
-bool	isArr(void);
+	// Use get method to access object field:
+	AType *get(const string &key);  // For objects
+	AType *get(const size_t index); // For arrays
+
+	// Convert json type with following methods:
+	double	toNum(void);
+	string	toStr(void);
+	bool	toBool(void);
+	Object *toObj(void);
+	Array  *toArr(void);
+
+	// Or check if current type matches expected:
+	bool	isStr(void);
+	bool	isNum(void);
+	bool	isNull(void);
+	bool	isBool(void);
+	bool	isObj(void);
+	bool	isArr(void);
 ```
 
 ## Test
