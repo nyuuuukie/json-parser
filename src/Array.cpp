@@ -232,6 +232,9 @@ namespace JSON {
 			Utils::skipWhitespaces(raw, i);
 
 			if (currentValue != values && Utils::isEscChar(raw, i++, ',')) {
+				if (value != NULL) {
+					delete value;
+				}
 				throw AType::ParseException("Array:: Values must be separated with non-escaped \",\"");
 			}
 

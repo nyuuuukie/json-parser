@@ -279,13 +279,18 @@ namespace JSON {
 			Utils::skipWhitespaces(raw, i);
 
 			if (currentKey != keys && Utils::isEscChar(raw, i++, ',')) {
+				if (value != NULL) {
+					delete value;
+				}
 				throw AType::ParseException("Object:: Key-value pairs must be separated with non-escaped \",\"");
 			}
 
 			std::pair<JSON::Object::iterator, bool> res;
 			res = _map.insert(std::make_pair(rawkey, value));
 			if (res.second == false) {
-				delete value;
+				if (value != NULL) {
+					delete value;
+				}
 				throw AType::ParseException("Object:: Duplicated key \"" + rawkey + "\"");
 			}
 			currentKey++;
